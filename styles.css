@@ -97,6 +97,10 @@ nav a:hover {
   margin-top: 28px;
 }
 
+.experience {
+  margin-top: 36px;
+}
+
 .section-head {
   margin-bottom: 22px;
 }
@@ -116,6 +120,12 @@ nav a:hover {
 }
 
 .project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px 26px;
+}
+
+.experience-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px 26px;
@@ -143,12 +153,47 @@ nav a:hover {
   box-shadow: var(--shadow);
 }
 
+.experience-media {
+  margin: 0;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f9f9f8;
+  border: 1px solid rgba(190, 190, 190, 0.5);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+  padding: 18%;
+  position: relative;
+}
+
 .project-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   transition: transform 0.3s ease;
+}
+
+.experience-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.logo-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+  letter-spacing: 0.08em;
+  color: #4f4f4d;
+  background:
+    linear-gradient(135deg, rgba(237, 237, 235, 0.9), rgba(223, 223, 220, 0.9)),
+    #f4f4f3;
 }
 
 .project-card:hover img {
@@ -182,6 +227,20 @@ nav a:hover {
   line-height: 1.45;
 }
 
+.experience-role {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: #3d3d3b;
+}
+
+.experience-dates {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
 .site-footer {
   margin-top: 34px;
   padding-top: 18px;
@@ -205,6 +264,10 @@ nav a:hover {
   .project-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .experience-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 700px) {
@@ -222,6 +285,11 @@ nav a:hover {
   }
 
   .project-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .experience-grid {
     grid-template-columns: 1fr;
     gap: 22px;
   }
