@@ -47,6 +47,70 @@ function createCard(project, index) {
   return card;
 }
 
+function getInitials(text) {
+  if (!text) return "EX";
+  return text
+    .split(/[\s@&-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("");
+}
+
+function createExperienceCard(experience, index) {
+  const card = document.createElement("a");
+  card.className = "project-card";
+  card.href = experience.profileUrl || "https://www.linkedin.com/in/briansawaya/";
+  card.target = "_blank";
+  card.rel = "noopener noreferrer";
+  card.style.setProperty("--i", index.toString());
+
+  const media = document.createElement("figure");
+  media.className = "experience-media";
+
+  const image = document.createElement("img");
+  image.src = experience.logoUrl || "";
+  image.alt = experience.company
+    ? `${experience.company} logo`
+    : "Company logo";
+  image.loading = "lazy";
+  image.decoding = "async";
+
+  const fallback = document.createElement("div");
+  fallback.className = "logo-fallback";
+  fallback.textContent = getInitials(experience.company);
+  fallback.hidden = false;
+
+  image.addEventListener("load", () => {
+    fallback.hidden = true;
+  });
+
+  image.addEventListener("error", () => {
+    fallback.hidden = false;
+  });
+
+  media.append(image, fallback);
+
+  const copy = document.createElement("div");
+  copy.className = "project-copy";
+
+  const company = document.createElement("span");
+  company.className = "project-title";
+  company.textContent = experience.company || "Experience";
+
+  const role = document.createElement("p");
+  role.className = "experience-role";
+  role.textContent = experience.role || "";
+
+  const dates = document.createElement("div");
+  dates.className = "experience-dates";
+  dates.textContent = experience.period || "";
+
+  copy.append(company, role, dates);
+  card.append(media, copy);
+  return card;
+}
+
 async function renderProjects() {
   const grid = document.getElementById("project-grid");
   if (!grid) return;
@@ -74,4 +138,32 @@ async function renderProjects() {
   }
 }
 
+async function renderExperiences() {
+  const grid = document.getElementById("experience-grid");
+  if (!grid) return;
+
+  try {
+    const response = await fetch("experiences.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`Failed to load: ${response.status}`);
+    const experiences = await response.json();
+
+    const validExperiences = (experiences || []).filter(
+      (experience) => experience && experience.company && experience.role,
+    );
+
+    if (!validExperiences.length) {
+      grid.innerHTML = "<p>No experience found.</p>";
+      return;
+    }
+
+    validExperiences.forEach((experience, index) => {
+      grid.appendChild(createExperienceCard(experience, index));
+    });
+  } catch (error) {
+    console.error(error);
+    grid.innerHTML = "<p>Could not load experience right now.</p>";
+  }
+}
+
 renderProjects();
+renderExperiences();
