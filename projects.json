@@ -1,0 +1,90 @@
+﻿[
+    {
+        "id":  "2db70f91-e75d-8077-bf17-f4906a774b74",
+        "collection":  "Featured Projects",
+        "title":  "Pipette Actuation System",
+        "description":  "Designed automated pipetting system with stepper motor control for Neurotech @ Berkeley\u0027s AutoLab, enabling precise liquid handling for high-throughput experiments.",
+        "tags":  [
+                     "Design"
+                 ],
+        "imageUrl":  "https://www.notion.so/image/attachment%3A362c2202-633d-498b-88d6-5c30ec807ed5%3Aimage.png?table=block\u0026id=2dc70f91-e75d-8082-8675-c61d22fa92e1\u0026spaceId=aa8539dd-2a06-47d3-80f8-6e8effe67377\u0026width=1200\u0026cache=v2",
+        "notionUrl":  "https://www.notion.so/2db70f91e75d8077bf17f4906a774b74"
+    },
+    {
+        "id":  "2dc70f91-e75d-8047-8156-e0319bcc966e",
+        "collection":  "Featured Projects",
+        "title":  "Posture Correction Device",
+        "description":  "Led team of 5 building compact posture correction device using Arduino, accelerometers, and vibration motors.",
+        "tags":  [
+
+                 ],
+        "imageUrl":  "https://www.notion.so/image/attachment%3Ab5b0b423-ffe2-4e34-849f-6b7bdcf49399%3Aimage_-_2026-01-01T161628.838.png?table=block\u0026id=2dc70f91-e75d-806b-8723-ce08e970bef6\u0026spaceId=aa8539dd-2a06-47d3-80f8-6e8effe67377\u0026width=1200\u0026cache=v2",
+        "notionUrl":  "https://www.notion.so/2dc70f91e75d80478156e0319bcc966e"
+    },
+    {
+        "id":  "2dc70f91-e75d-802e-a491-de77b1bd88d6",
+        "collection":  "Featured Projects",
+        "title":  "Wind Turbine",
+        "description":  "A hands-on mechanical engineering project from my portfolio.",
+        "tags":  [
+
+                 ],
+        "imageUrl":  "https://www.notion.so/image/attachment%3Ae3193bb4-2e4e-43b7-9aaa-64432a176655%3Aimage.png?table=block\u0026id=2dc70f91-e75d-80f2-acd4-d9b27c93572a\u0026spaceId=aa8539dd-2a06-47d3-80f8-6e8effe67377\u0026width=1200\u0026cache=v2",
+        "notionUrl":  "https://www.notion.so/2dc70f91e75d802ea491de77b1bd88d6"
+    },
+    {
+        "id":  "2dc70f91-e75d-808f-b395-eb4d1abac219",
+        "collection":  "Featured Projects",
+        "title":  "ISS Spectrophotometer",
+        "description":  "Design for Manufacturing (DFM)\nWorked on creating and optimizing 3D prints, working with Wainamics, NASA, Tec de Monterey, Santa Clara University, University of Washington, and other confidential stakeholders.",
+        "tags":  [
+
+                 ],
+        "imageUrl":  "https://www.notion.so/image/attachment%3A99f061a1-62ed-4667-939d-d117486227bd%3Aimage.png?table=block\u0026id=2dc70f91-e75d-80e3-90c5-e8a8b4acb8a7\u0026spaceId=aa8539dd-2a06-47d3-80f8-6e8effe67377\u0026width=1200\u0026cache=v2",
+        "notionUrl":  "https://www.notion.so/2dc70f91e75d808fb395eb4d1abac219"
+    },
+    {
+        "id":  "2dc70f91-e75d-80f4-8b3d-ccaf375fd712",
+        "collection":  "Personal Projects",
+        "title":  "Hybrid Plant Pot",
+        "description":  "Created plant pot that allows for dry plants and wet plants to grow in the same pot",
+        "tags":  [
+
+                 ],
+        "imageUrl":  "https://www.notion.so/image/attachment%3A00a0b3e7-c1e3-4800-8552-5821c7864ca1%3Aimage.png?table=block\u0026id=2dc70f91-e75d-8056-95b4-e619c2f3edc9\u0026spaceId=aa8539dd-2a06-47d3-80f8-6e8effe67377\u0026width=1200\u0026cache=v2",
+        "notionUrl":  "https://www.notion.so/2dc70f91e75d80f48b3dccaf375fd712"
+    },
+    {
+        "id":  "2dc70f91-e75d-80c1-af07-f1b377ece054",
+        "collection":  "3D prints for fun :)",
+        "title":  "Coasters",
+        "description":  "Printed with AMS",
+        "tags":  [
+
+                 ],
+        "imageUrl":  "https://www.notion.so/image/attachment%3Aeef5abd8-a275-47e1-b956-23a5b4607664%3Aimage_-_2026-01-01T224213.143.png?table=block\u0026id=2dc70f91-e75d-80ea-8747-e32592018a74\u0026spaceId=aa8539dd-2a06-47d3-80f8-6e8effe67377\u0026width=1200\u0026cache=v2",
+        "notionUrl":  "https://www.notion.so/2dc70f91e75d80c1af07f1b377ece054"
+    },
+    {
+        "id":  "2dc70f91-e75d-80a7-8b87-d7c5e9ba833d",
+        "collection":  "3D prints for fun :)",
+        "title":  "Album art",
+        "description":  "Frank Ocean’s “Blonde” made in HueForge",
+        "tags":  [
+
+                 ],
+        "imageUrl":  "https://www.notion.so/image/attachment%3A91ac500a-61c7-4665-8d6c-ccacae6535b1%3Aimage.png?table=block\u0026id=2dc70f91-e75d-80fb-aaff-d4d9456ac379\u0026spaceId=aa8539dd-2a06-47d3-80f8-6e8effe67377\u0026width=1200\u0026cache=v2",
+        "notionUrl":  "https://www.notion.so/2dc70f91e75d80a78b87d7c5e9ba833d"
+    },
+    {
+        "id":  "2dc70f91-e75d-8092-a325-c126e4894187",
+        "collection":  "3D prints for fun :)",
+        "title":  "Passthrough fidget",
+        "description":  "A hands-on mechanical engineering project from my portfolio.",
+        "tags":  [
+
+                 ],
+        "imageUrl":  "https://www.notion.so/image/attachment%3A111d21c8-bd3d-4dcc-b467-cd249f120092%3Aimage.png?table=block\u0026id=2dc70f91-e75d-8091-a6ca-d2f24baddcef\u0026spaceId=aa8539dd-2a06-47d3-80f8-6e8effe67377\u0026width=1200\u0026cache=v2",
+        "notionUrl":  "https://www.notion.so/2dc70f91e75d8092a325c126e4894187"
+    }
+]
