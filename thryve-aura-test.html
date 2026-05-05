@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thryve Energy Aura Test</title>
+    <meta
+      name="description"
+      content="A high-conversion Thryve Superfoods energy aura quiz."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              thryveOrange: "#d96030",
+              thryveGreen: "#1d4c40",
+              thryveBeige: "#efead3",
+              ink: "#17362f",
+            },
+            fontFamily: {
+              display: ["Unbounded", "system-ui", "sans-serif"],
+              body: ["Work Sans", "system-ui", "sans-serif"],
+            },
+            boxShadow: {
+              aura: "0 26px 80px rgba(29, 76, 64, 0.22)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --orange: #d96030;
+        --green: #1d4c40;
+        --beige: #efead3;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Work Sans", system-ui, sans-serif;
+        background:
+          radial-gradient(circle at 12% 14%, rgba(217, 96, 48, 0.2), transparent 28rem),
+          radial-gradient(circle at 84% 10%, rgba(29, 76, 64, 0.18), transparent 30rem),
+          linear-gradient(135deg, #fbf7e7 0%, var(--beige) 44%, #f7dfc8 100%);
+        color: #17362f;
+        min-height: 100vh;
+      }
+
+      .topo {
+        background-image: url("data:image/svg+xml,%3Csvg width='720' height='720' viewBox='0 0 720 720' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%231d4c40' stroke-width='2' opacity='.13'%3E%3Cpath d='M64 340c42-87 104-132 188-136 115-6 123 93 216 79 58-9 92-44 124-94'/%3E%3Cpath d='M36 412c73-129 159-195 258-197 89-2 111 72 186 62 77-10 126-69 169-158'/%3E%3Cpath d='M18 505c80-158 180-242 300-252 84-7 120 49 185 42 93-10 145-86 188-187'/%3E%3Cpath d='M96 279c39-60 88-91 147-94 86-5 105 58 177 49 50-6 87-38 112-90'/%3E%3Cpath d='M142 561c72-94 144-145 216-153 83-9 114 43 189 18 42-14 75-46 98-96'/%3E%3Cpath d='M44 604c68-85 140-130 216-136 100-8 142 61 236 29 59-20 103-65 132-135'/%3E%3C/g%3E%3C/svg%3E");
+        background-size: 720px 720px;
+      }
+
+      .broken-lines {
+        background-image:
+          linear-gradient(90deg, rgba(217, 96, 48, 0.26) 0 32px, transparent 32px 50px),
+          linear-gradient(0deg, rgba(29, 76, 64, 0.18) 0 22px, transparent 22px 44px);
+        background-size: 86px 2px, 2px 74px;
+        mask-image: radial-gradient(circle at center, black 0 58%, transparent 72%);
+      }
+
+      .answer-card {
+        transition:
+          transform 180ms ease,
+          border-color 180ms ease,
+          background 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .answer-card:hover,
+      .answer-card:focus-visible {
+        transform: translateY(-3px);
+        border-color: rgba(217, 96, 48, 0.9);
+        box-shadow: 0 16px 38px rgba(29, 76, 64, 0.14);
+      }
+
+      .mushroom-cap {
+        transform-origin: 50% 70%;
+        animation: breathe 3s ease-in-out infinite;
+      }
+
+      .mushroom-spark {
+        animation: twinkle 1.8s ease-in-out infinite;
+      }
+
+      .mushroom-wave {
+        transform-origin: 50% 50%;
+        animation: wave 1.8s ease-in-out infinite;
+      }
+
+      .card-enter {
+        animation: cardIn 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      }
+
+      .aura-glow {
+        animation: glow 4s ease-in-out infinite;
+      }
+
+      @keyframes breathe {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-5px) scale(1.035);
+        }
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.2;
+          transform: scale(0.8);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+
+      @keyframes wave {
+        0%,
+        100% {
+          transform: rotate(-4deg);
+        }
+        50% {
+          transform: rotate(10deg);
+        }
+      }
+
+      @keyframes cardIn {
+        from {
+          opacity: 0;
+          transform: translateY(22px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes glow {
+        0%,
+        100% {
+          filter: saturate(1) brightness(1);
+        }
+        50% {
+          filter: saturate(1.12) brightness(1.04);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useEffect, useState } = React;
+
+      const THRYVE_TAGS = {
+        high: "Aura_High_Energy",
+        balanced: "Aura_Balanced_Energy",
+        recovery: "Aura_Recovery_Energy",
+      };
+
+      const PRODUCTS = {
+        coffee: {
+          name: "Antrodia Coffee",
+          subtitle: "Standard Strength",
+          price: "$37.8",
+          image:
+            "https://d2xsxph8kpxj0f.cloudfront.net/310519663397984451/NcKmy9pJsXRY2tQpeMfcSe/coffee_standard_new-ENPqdBcnCPXhLopgYDWrhW.webp",
+          reason:
+            "A better daily ritual for steady mornings, clearer focus, and smoother energy.",
+          url: "https://thryvesuperfoodsus.com/products/antrodia-coffee-standard",
+        },
+        capsules: {
+          name: "Antrodia Capsules",
+          subtitle: "Essential Daily Immunity Builder",
+          price: "$48.3",
+          image:
+            "https://d2xsxph8kpxj0f.cloudfront.net/310519663397984451/NcKmy9pJsXRY2tQpeMfcSe/capsules_new-8ZAdmZSWU33tSXzW7rWHWi.webp",
+          reason:
+            "Daily liver, immune, and resilience support when your system needs a reset.",
+          url: "https://thryvesuperfoodsus.com/products",
+        },
+        pearls: {
+          name: "Amber Vitality Pearls",
+          subtitle: "Energy Lifecycle Management",
+          price: "$51.8",
+          image:
+            "https://d2xsxph8kpxj0f.cloudfront.net/310519663397984451/NcKmy9pJsXRY2tQpeMfcSe/amber_vitality_pearls_label_bf25d447.webp",
+          reason:
+            "Ultra-premium support for high-output days: ignite, sustain, and restore.",
+          url: "https://thryvesuperfoodsus.com/products",
+        },
+      };
+
+      function applyThryveTag(personaKey, score) {
+        const tag = THRYVE_TAGS[personaKey] || "Aura_Explorer";
+        const payload = { tag, score, source: "Thryve Energy Aura Test" };
+
+        if (window.Shopify && window.Shopify.customer) {
+          window.dispatchEvent(
+            new CustomEvent("thryve:apply-customer-tag", { detail: payload }),
+          );
+          console.info("Shopify tag request dispatched:", payload);
+        } else {
+          console.info("Mock Shopify tag applied:", payload);
+        }
+
+        return payload;
+      }
+
+      const questions = [
+        {
+          eyebrow: "Morning Vitality",
+          prompt: "How did you wake up today?",
+          healthyDialogue: "Awake and steady. Your aura is already warming up.",
+          unhealthyDialogue:
+            "I feel that in my mycelium. Let's get your aura glowing.",
+          answers: [
+            {
+              label: "Tired and slow",
+              description: "Heavy eyes, low motivation, and a rough start.",
+              delta: -20,
+              type: "unhealthy",
+            },
+            {
+              label: "Awake and ready",
+              description: "Clear start, steady mood, and energy to move.",
+              delta: 20,
+              type: "healthy",
+            },
+          ],
+        },
+        {
+          eyebrow: "Professional Output",
+          prompt: "How does work feel right now?",
+          healthyDialogue: "Focused work mode looks good on your aura.",
+          unhealthyDialogue: "Fog happens. We can tune that signal back up.",
+          answers: [
+            {
+              label: "Focused and productive",
+              description: "Clear priorities, good pace, and steady follow-through.",
+              delta: 20,
+              type: "healthy",
+            },
+            {
+              label: "Burned out or foggy",
+              description: "Scattered thoughts, slow decisions, and low drive.",
+              delta: -20,
+              type: "unhealthy",
+            },
+          ],
+        },
+        {
+          eyebrow: "Social + Recovery",
+          prompt: "How did you recover last night?",
+          healthyDialogue: "Restorative sleep is aura compost. Beautiful work.",
+          unhealthyDialogue:
+            "Late nights leave footprints. Your liver support era is calling.",
+          answers: [
+            {
+              label: "Late night or restless",
+              description: "Alcohol, poor sleep, or a body that still feels taxed.",
+              delta: -20,
+              type: "unhealthy",
+            },
+            {
+              label: "Rested and reset",
+              description: "Good sleep, calmer body, and a more stable baseline.",
+              delta: 20,
+              type: "healthy",
+            },
+          ],
+        },
+        {
+          eyebrow: "Mental Clarity",
+          prompt: "How clear does your mind feel?",
+          healthyDialogue: "Clear and steady is the kind of shine we like.",
+          unhealthyDialogue: "Coffee can carry the moment. MCT can build the runway.",
+          answers: [
+            {
+              label: "Needs coffee to start",
+              description: "Useful boost, but your focus feels borrowed.",
+              delta: -20,
+              type: "unhealthy",
+            },
+            {
+              label: "Clear and steady",
+              description: "Stable attention, smoother energy, fewer crashes.",
+              delta: 20,
+              type: "healthy",
+            },
+          ],
+        },
+        {
+          eyebrow: "Resilience",
+          prompt: "How is your stamina today?",
+          healthyDialogue: "Strong stamina detected. The cap is glowing.",
+          unhealthyDialogue: "Low stamina is data, not destiny. We can build from here.",
+          answers: [
+            {
+              label: "I get tired easily",
+              description: "Normal effort drains you faster than it should.",
+              delta: -20,
+              type: "unhealthy",
+            },
+            {
+              label: "Strong and steady",
+              description: "Durable energy, physical confidence, better follow-through.",
+              delta: 20,
+              type: "healthy",
+            },
+          ],
+        },
+      ];
+
+      function getPersona(score) {
+        if (score >= 80) {
+          return {
+            key: "high",
+            title: "The Radiant Achiever",
+            focus: "High Performance & Vitality",
+            gradient: "from-[#f6b058] via-[#d96030] to-[#1d4c40]",
+            top: "Top 8%",
+            badge: "Peak Output",
+            product: PRODUCTS.pearls,
+            pitch:
+              "Your match is Amber Vitality Pearls: ultra-premium energy lifecycle support for high-output days that need ignition, stamina, and recovery.",
+          };
+        }
+
+        if (score >= 40) {
+          return {
+            key: "balanced",
+            title: "The Resilient Explorer",
+            focus: "Balanced Energy & Growth",
+            gradient: "from-[#efead3] via-[#8bb982] to-[#d96030]",
+            top: "Top 34%",
+            badge: "Balanced Growth",
+            product: PRODUCTS.coffee,
+            pitch:
+              "Your match is Antrodia Coffee: the daily ritual you already understand, upgraded for smoother energy, focus, and everyday wellness.",
+          };
+        }
+
+        return {
+          key: "recovery",
+          title: "The Forest Ruby in Waiting",
+          focus: "Needs Liver Support & Recovery",
+          gradient: "from-[#1d4c40] via-[#5a7f57] to-[#d96030]",
+          top: "Rising 58%",
+          badge: "Recovery Reset",
+          product: PRODUCTS.capsules,
+          pitch:
+            "Your match is Antrodia Capsules: a steady recovery foundation for liver support, immune resilience, and rebuilding your baseline.",
+        };
+      }
+
+      function clampScore(score) {
+        return Math.max(0, Math.min(100, score));
+      }
+
+      function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+        const secs = (seconds % 60).toString().padStart(2, "0");
+        return `${minutes}:${secs}`;
+      }
+
+      function MushroomMascot({ progress, mood }) {
+        const capColor =
+          mood === "healthy" ? "#d96030" : mood === "unhealthy" ? "#c75632" : "#d96030";
+        const cheekColor = mood === "unhealthy" ? "#eaa277" : "#ff7e72";
+        const eyeY = mood === "unhealthy" ? 119 : 116;
+        const mouthPath =
+          mood === "unhealthy" ? "M96 139 Q110 134 124 139" : "M96 136 Q110 148 124 136";
+
+        return (
+          <div className="relative mx-auto h-48 w-48 sm:h-56 sm:w-56" aria-hidden="true">
+            <svg viewBox="0 0 220 220" className="h-full w-full drop-shadow-xl">
+              <circle cx="110" cy="118" r="90" fill="#efead3" opacity="0.78" />
+              <g className="mushroom-spark">
+                <path d="M39 62 l7 13 14 6-14 6-7 13-7-13-14-6 14-6z" fill="#d96030" />
+              </g>
+              <g className="mushroom-spark" style={{ animationDelay: "0.45s" }}>
+                <path d="M177 42 l5 10 11 5-11 5-5 10-5-10-11-5 11-5z" fill="#1d4c40" />
+              </g>
+              <ellipse cx="110" cy="198" rx="62" ry="9" fill="#1d4c40" opacity="0.16" />
+              <path
+                d="M65 154c-19 4-32 14-41 34 24 4 43-3 57-21"
+                fill="#8bb982"
+                stroke="#20342e"
+                strokeWidth="4"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M41 181c9-4 18-9 28-18M50 166l-3-13M60 173l13 1"
+                fill="none"
+                stroke="#1d4c40"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+              <path
+                d="M155 154c19 4 32 14 41 34-24 4-43-3-57-21"
+                fill="#8bb982"
+                stroke="#20342e"
+                strokeWidth="4"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M179 181c-9-4-18-9-28-18M170 166l3-13M160 173l-13 1"
+                fill="none"
+                stroke="#1d4c40"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+              <path
+                d="M73 93c-11 21-18 52-12 73 6 21 24 31 49 31 26 0 44-11 50-32 6-21-1-51-13-72-22 8-52 8-74 0z"
+                fill="#f7c486"
+                stroke="#20342e"
+                strokeWidth="5"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M64 137c24 10 68 10 92 0"
+                fill="none"
+                stroke="#d8965f"
+                strokeWidth="5"
+                strokeLinecap="round"
+                opacity="0.45"
+              />
+              <g className="mushroom-cap">
+                <path
+                  d="M31 104c1-43 34-80 81-80 45 0 76 31 78 75 1 26-17 38-41 31-13-4-23-11-39-11-18 0-30 9-48 12-22 4-32-9-31-27z"
+                  fill={capColor}
+                  stroke="#20342e"
+                  strokeWidth="5"
+                  strokeLinejoin="round"
+                />
+                <ellipse cx="82" cy="58" rx="18" ry="10" fill="#fff5df" stroke="#20342e" strokeWidth="3" transform="rotate(-24 82 58)" />
+                <ellipse cx="127" cy="54" rx="14" ry="8" fill="#fff5df" stroke="#20342e" strokeWidth="3" />
+                <ellipse cx="161" cy="78" rx="18" ry="10" fill="#fff5df" stroke="#20342e" strokeWidth="3" transform="rotate(38 161 78)" />
+                <ellipse cx="57" cy="91" rx="12" ry="8" fill="#fff5df" stroke="#20342e" strokeWidth="3" transform="rotate(-18 57 91)" />
+                <ellipse cx="142" cy="91" rx="12" ry="11" fill="#fff5df" stroke="#20342e" strokeWidth="3" />
+                <ellipse cx="108" cy="80" rx="14" ry="6" fill="#fff5df" stroke="#20342e" strokeWidth="3" />
+                <circle cx="100" cy="57" r="4" fill="#fff5df" />
+                <circle cx="119" cy="40" r="4" fill="#fff5df" />
+                <path
+                  d="M40 111c20 10 44 11 70 5 28-7 50-2 70 9"
+                  fill="none"
+                  stroke="#20342e"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  opacity="0.45"
+                />
+              </g>
+              <ellipse cx="83" cy="136" rx="8" ry="5" fill={cheekColor} opacity="0.9" />
+              <ellipse cx="137" cy="136" rx="8" ry="5" fill={cheekColor} opacity="0.9" />
+              <circle cx="91" cy={eyeY} r="11" fill="#3a173a" />
+              <circle cx="129" cy={eyeY} r="11" fill="#3a173a" />
+              <circle cx="87" cy={eyeY - 4} r="3" fill="#fff" opacity="0.95" />
+              <circle cx="125" cy={eyeY - 4} r="3" fill="#fff" opacity="0.95" />
+              <path
+                d={mouthPath}
+                fill="none"
+                stroke="#3a173a"
+                strokeWidth="4"
+                strokeLinecap="round"
+              />
+              <circle
+                cx="110"
+                cy="110"
+                r="101"
+                fill="none"
+                stroke="#d96030"
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeDasharray={`${progress * 6.35} 635`}
+                transform="rotate(-90 110 110)"
+                opacity="0.9"
+              />
+            </svg>
+          </div>
+        );
+      }
+
+      function AuraCard({ score, persona }) {
+        const shareButtons = [
+          { id: "instagram", label: "Instagram", mark: "IG" },
+          { id: "x", label: "X", mark: "X" },
+          { id: "linkedin", label: "LinkedIn", mark: "in" },
+        ];
+
+        return (
+          <div className="mx-auto w-full max-w-[360px]">
+            <div
+              className={`aura-glow relative aspect-[9/16] overflow-hidden rounded-[2rem] bg-gradient-to-br ${persona.gradient} p-6 text-white shadow-aura`}
+            >
+              <div className="topo absolute inset-0 opacity-70 mix-blend-soft-light"></div>
+              <div className="broken-lines absolute -right-12 top-16 h-80 w-80 rotate-12 opacity-60"></div>
+              <div className="relative z-10 flex h-full flex-col">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-body text-xs font-bold uppercase tracking-[0.24em] text-white/80">
+                      Thryve Aura
+                    </p>
+                    <h2 className="mt-3 font-display text-3xl leading-tight">
+                      {persona.title}
+                    </h2>
+                  </div>
+                  <div className="rounded-full border border-white/40 bg-white/20 px-3 py-2 text-center backdrop-blur">
+                    <p className="font-display text-lg">{score}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em]">Score</p>
+                  </div>
+                </div>
+
+                <div className="mt-auto">
+                  <div className="mb-5 grid grid-cols-[1fr_auto] items-end gap-4">
+                    <div>
+                      <p className="text-sm font-semibold text-white/85">{persona.focus}</p>
+                      <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/25">
+                        <div
+                          className="h-full rounded-full bg-white"
+                          style={{ width: `${score}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="grid h-24 w-24 place-items-center rounded-2xl border border-white/45 bg-white p-2">
+                      <div className="grid h-full w-full grid-cols-4 grid-rows-4 gap-1">
+                        {Array.from({ length: 16 }).map((_, i) => (
+                          <span
+                            key={i}
+                            className={`rounded-sm ${
+                              [0, 1, 3, 4, 6, 9, 11, 12, 14, 15].includes(i)
+                                ? "bg-thryveGreen"
+                                : "bg-thryveOrange"
+                            }`}
+                          ></span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 border-t border-white/30 pt-5">
+                    <div className="rounded-full bg-white px-4 py-2 text-sm font-black text-thryveGreen">
+                      {persona.top}
+                    </div>
+                    <p className="text-right text-xs font-bold uppercase tracking-[0.18em] text-white/80">
+                      Scan to Thryve
+                    </p>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl border border-white/30 bg-white/15 p-3 backdrop-blur">
+                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/75">
+                      Share Your Aura
+                    </p>
+                    <div className="mt-2 grid grid-cols-3 gap-2">
+                      {shareButtons.map((button) => (
+                        <button
+                          key={button.id}
+                          type="button"
+                          aria-label={`Share to ${button.label}`}
+                          className="rounded-full bg-white px-2 py-2 text-xs font-black text-thryveGreen transition hover:-translate-y-0.5 hover:bg-thryveBeige focus:outline-none focus:ring-4 focus:ring-white/30"
+                          onClick={() => shareAura(button.id, persona, score)}
+                        >
+                          {button.mark}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function shareAura(platform, persona, score) {
+        const shareUrl = window.location.href.startsWith("file:")
+          ? "https://thryvesuperfoodsus.com/products"
+          : window.location.href;
+        const text = `I got ${persona.title} on the Thryve Energy Aura Test with an aura score of ${score}. My match: ${persona.product.name}.`;
+        const encodedText = encodeURIComponent(text);
+        const encodedUrl = encodeURIComponent(shareUrl);
+
+        if (platform === "instagram") {
+          const caption = `${text} ${shareUrl}`;
+          if (navigator.share) {
+            navigator.share({ title: "My Thryve Aura", text, url: shareUrl });
+            return;
+          }
+          navigator.clipboard?.writeText(caption);
+          alert("Instagram does not support direct web posting here, so your aura caption was copied.");
+          return;
+        }
+
+        if (platform === "x") {
+          window.open(
+            `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+            "_blank",
+            "noopener,noreferrer",
+          );
+          return;
+        }
+
+        window.open(
+          `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+          "_blank",
+          "noopener,noreferrer",
+        );
+      }
+
+      function ArchetypeCards() {
+        const archetypes = [
+          getPersona(90),
+          getPersona(60),
+          getPersona(20),
+        ];
+
+        return (
+          <div className="mt-7">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-thryveOrange">
+              3 Thryve Aura Possibilities
+            </p>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {archetypes.map((archetype) => (
+                <article
+                  key={archetype.title}
+                  className="overflow-hidden rounded-2xl border border-thryveGreen/12 bg-white/70"
+                >
+                  <img
+                    src={archetype.product.image}
+                    alt={`${archetype.product.name} product packaging`}
+                    className="h-28 w-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="p-4">
+                    <h3 className="font-display text-sm leading-tight text-thryveGreen">
+                      {archetype.title}
+                    </h3>
+                    <p className="mt-2 text-xs font-bold text-thryveOrange">
+                      {archetype.product.name}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function OfferPanel({ persona, score }) {
+        const [remaining, setRemaining] = useState(15 * 60);
+        const [appliedTag, setAppliedTag] = useState(null);
+
+        useEffect(() => {
+          const timer = window.setInterval(() => {
+            setRemaining((current) => Math.max(0, current - 1));
+          }, 1000);
+          return () => window.clearInterval(timer);
+        }, []);
+
+        useEffect(() => {
+          setAppliedTag(applyThryveTag(persona.key, score));
+        }, [persona.key, score]);
+
+        return (
+          <section className="rounded-[1.5rem] border border-thryveGreen/15 bg-white/80 p-5 shadow-aura backdrop-blur sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-thryveOrange">
+                  Limited Time Aura Offer
+                </p>
+                <h3 className="mt-2 font-display text-2xl text-thryveGreen">
+                  Your 15-minute toolkit is unlocked
+                </h3>
+              </div>
+              <div className="rounded-2xl bg-thryveGreen px-5 py-3 text-center text-white">
+                <p className="font-display text-2xl">{formatTime(remaining)}</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/75">
+                  Reserved
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 overflow-hidden rounded-[1.25rem] border border-thryveGreen/12 bg-white">
+              <div className="p-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-thryveOrange">
+                  Suggested Product
+                </p>
+                <h3 className="mt-2 font-display text-2xl leading-tight text-thryveGreen">
+                  {persona.product.name}
+                </h3>
+                <p className="mt-1 font-semibold text-ink/65">{persona.product.subtitle}</p>
+                <p className="mt-4 text-sm leading-6 text-ink/72">{persona.pitch}</p>
+                <p className="mt-3 text-sm leading-6 text-ink/68">
+                  Founding member pricing is reserved while your timer is active.
+                </p>
+              </div>
+
+              <div className="relative h-64 overflow-hidden bg-thryveBeige">
+                <img
+                  src={persona.product.image}
+                  alt={`${persona.product.name} product packaging`}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-thryveGreen">
+                  Aura Match
+                </div>
+                <div className="absolute bottom-4 right-4 rounded-full bg-thryveGreen px-4 py-2 font-display text-sm text-white">
+                  {persona.product.price}
+                </div>
+              </div>
+            </div>
+
+            <button
+              className="mt-6 w-full rounded-full bg-thryveOrange px-6 py-4 font-display text-sm uppercase tracking-[0.12em] text-white shadow-lg shadow-thryveOrange/25 transition hover:-translate-y-0.5 hover:bg-[#c94f25] focus:outline-none focus:ring-4 focus:ring-thryveOrange/25"
+              type="button"
+              onClick={() =>
+                alert(`Discount route mocked with Shopify tag: ${appliedTag?.tag || "Aura_Explorer"}`)
+              }
+            >
+              Add My Performance Toolkit
+            </button>
+          </section>
+        );
+      }
+
+      function App() {
+        const [started, setStarted] = useState(false);
+        const [questionIndex, setQuestionIndex] = useState(0);
+        const [score, setScore] = useState(50);
+        const [answers, setAnswers] = useState([]);
+        const [dialogue, setDialogue] = useState(
+          "Welcome in. I'll read your energy field with professional-grade mushroom intuition.",
+        );
+        const [mood, setMood] = useState("neutral");
+
+        const complete = answers.length === questions.length;
+        const current = questions[questionIndex];
+        const progress = complete ? 100 : Math.round((questionIndex / questions.length) * 100);
+        const finalScore = clampScore(score);
+        const persona = getPersona(finalScore);
+
+        function chooseAnswer(answer) {
+          const nextScore = clampScore(score + answer.delta);
+          const nextAnswers = [...answers, answer];
+
+          setScore(nextScore);
+          setAnswers(nextAnswers);
+          setMood(answer.type);
+          setDialogue(answer.type === "healthy" ? current.healthyDialogue : current.unhealthyDialogue);
+
+          window.setTimeout(() => {
+            if (questionIndex + 1 < questions.length) {
+              setQuestionIndex((index) => index + 1);
+            }
+          }, 260);
+        }
+
+        function resetQuiz() {
+          setStarted(false);
+          setQuestionIndex(0);
+          setScore(50);
+          setAnswers([]);
+          setMood("neutral");
+          setDialogue(
+            "Welcome in. I'll read your energy field with professional-grade mushroom intuition.",
+          );
+        }
+
+        return (
+          <main className="relative min-h-screen overflow-hidden">
+            <div className="topo pointer-events-none absolute inset-0 opacity-80"></div>
+            <div className="broken-lines pointer-events-none absolute left-[-9rem] top-20 h-96 w-96 opacity-60"></div>
+            <div className="broken-lines pointer-events-none absolute bottom-[-8rem] right-[-8rem] h-[30rem] w-[30rem] rotate-45 opacity-50"></div>
+
+            <section className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl items-center gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
+              <aside className="card-enter">
+                <div className="inline-flex items-center gap-2 rounded-full border border-thryveGreen/15 bg-white/70 px-4 py-2 text-sm font-bold text-thryveGreen shadow-sm backdrop-blur">
+                  <span className="h-2.5 w-2.5 rounded-full bg-thryveOrange"></span>
+                  Thryve Superfoods
+                </div>
+                <h1 className="mt-6 font-display text-4xl leading-[1.05] text-thryveGreen sm:text-5xl lg:text-6xl">
+                  Thryve Energy Aura Test
+                </h1>
+                <p className="mt-5 max-w-xl text-lg leading-8 text-ink/75">
+                  Discover whether your energy is primed for performance, ready for
+                  balanced growth, or asking for deeper recovery support.
+                </p>
+
+                <div className="mt-8 rounded-[1.5rem] border border-thryveGreen/15 bg-white/70 p-5 shadow-aura backdrop-blur">
+                  <MushroomMascot progress={progress} mood={mood} />
+                  <div className="mt-4 rounded-2xl bg-thryveGreen px-5 py-4 text-white">
+                    <p className="text-sm font-bold uppercase tracking-[0.16em] text-white/65">
+                      Mushroom Dialogue
+                    </p>
+                    <p className="mt-2 text-lg font-semibold leading-7">{dialogue}</p>
+                  </div>
+                </div>
+              </aside>
+
+              <section className="card-enter rounded-[2rem] border border-thryveGreen/15 bg-white/75 p-4 shadow-aura backdrop-blur sm:p-6 lg:p-8">
+                {!started ? (
+                  <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+                    <div>
+                      <p className="text-sm font-bold uppercase tracking-[0.2em] text-thryveOrange">
+                        5-question performance read
+                      </p>
+                      <h2 className="mt-4 font-display text-3xl leading-tight text-thryveGreen sm:text-4xl">
+                        Your habits reveal the glow.
+                      </h2>
+                      <p className="mt-4 max-w-2xl text-base leading-7 text-ink/72">
+                        Answer five quick lifestyle questions to generate an
+                        Instagram-ready aura card and a timed Thryve toolkit offer.
+                      </p>
+                      <ArchetypeCards />
+                    </div>
+                    <button
+                      className="rounded-full bg-thryveOrange px-8 py-4 font-display text-sm uppercase tracking-[0.14em] text-white shadow-lg shadow-thryveOrange/25 transition hover:-translate-y-0.5 hover:bg-[#c94f25] focus:outline-none focus:ring-4 focus:ring-thryveOrange/25"
+                      type="button"
+                      onClick={() => {
+                        setStarted(true);
+                        setDialogue("First read: morning energy. Be honest with the forest.");
+                      }}
+                    >
+                      Begin Test
+                    </button>
+                  </div>
+                ) : complete ? (
+                  <div className="space-y-7">
+                    <div>
+                      <p className="text-sm font-bold uppercase tracking-[0.2em] text-thryveOrange">
+                        Aura Revealed
+                      </p>
+                      <h2 className="mt-3 font-display text-3xl leading-tight text-thryveGreen sm:text-4xl">
+                        {persona.title}
+                      </h2>
+                      <p className="mt-3 text-lg font-semibold text-ink/75">
+                        {persona.focus}
+                      </p>
+                    </div>
+
+                    <div className="grid gap-8 xl:grid-cols-[0.86fr_1.14fr] xl:items-start">
+                      <AuraCard score={finalScore} persona={persona} />
+                      <div className="space-y-5">
+                        <OfferPanel persona={persona} score={finalScore} />
+                      <button
+                        className="w-full rounded-full border border-thryveGreen/20 bg-white/60 px-6 py-3 font-bold text-thryveGreen transition hover:bg-thryveBeige"
+                        type="button"
+                        onClick={resetQuiz}
+                      >
+                        Retake the Aura Test
+                      </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div>
+                        <p className="text-sm font-bold uppercase tracking-[0.2em] text-thryveOrange">
+                          {current.eyebrow}
+                        </p>
+                        <h2 className="mt-3 font-display text-3xl leading-tight text-thryveGreen sm:text-4xl">
+                          {current.prompt}
+                        </h2>
+                      </div>
+                      <div className="rounded-full bg-thryveBeige px-4 py-2 text-sm font-bold text-thryveGreen">
+                        {questionIndex + 1} / {questions.length}
+                      </div>
+                    </div>
+
+                    <div className="mt-6 h-3 overflow-hidden rounded-full bg-thryveGreen/10">
+                      <div
+                        className="h-full rounded-full bg-thryveOrange transition-all duration-500"
+                        style={{ width: `${((questionIndex + 1) / questions.length) * 100}%` }}
+                      ></div>
+                    </div>
+
+                    <div className="mt-8 grid gap-4 md:grid-cols-2">
+                      {current.answers.map((answer) => (
+                        <button
+                          key={answer.label}
+                          type="button"
+                          className="answer-card min-h-44 rounded-[1.25rem] border border-thryveGreen/15 bg-white/78 p-5 text-left focus:outline-none focus:ring-4 focus:ring-thryveOrange/20"
+                          onClick={() => chooseAnswer(answer)}
+                        >
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.16em] ${
+                              answer.type === "healthy"
+                                ? "bg-thryveGreen text-white"
+                                : "bg-thryveOrange/15 text-thryveOrange"
+                            }`}
+                          >
+                            {answer.type === "healthy" ? "Feels Supportive" : "Needs Support"}
+                          </span>
+                          <span className="mt-5 block font-display text-xl leading-snug text-thryveGreen">
+                            {answer.label}
+                          </span>
+                          <span className="mt-3 block text-sm leading-6 text-ink/68">
+                            {answer.description}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </section>
+            </section>
+          </main>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
