@@ -1,1 +1,75 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/Brians_New_portfolio/_next/static/css/74240942fe03ec09.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/Brians_New_portfolio/_next/static/chunks/webpack-d31e0d924d7c1afa.js"/><script src="/Brians_New_portfolio/_next/static/chunks/fd9d1056-0ae5902f35a58e60.js" async=""></script><script src="/Brians_New_portfolio/_next/static/chunks/117-c2327552eb0966c6.js" async=""></script><script src="/Brians_New_portfolio/_next/static/chunks/main-app-133d504eaaafe260.js" async=""></script><script src="/Brians_New_portfolio/_next/static/chunks/b536a0f1-7cafcb8c1d7896af.js" async=""></script><script src="/Brians_New_portfolio/_next/static/chunks/bd904a5c-800b8c5f11bd43e9.js" async=""></script><script src="/Brians_New_portfolio/_next/static/chunks/950-fdb2adeeeddc9253.js" async=""></script><script src="/Brians_New_portfolio/_next/static/chunks/app/page-c1156d0ff1a82138.js" async=""></script><title>Skadis LiDAR Aligner</title><meta name="description" content="Smooth, align, and export LiDAR STL scans for Skadis pegboard mounts."/><script src="/Brians_New_portfolio/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body><main class="relative h-screen w-screen overflow-hidden bg-graphite text-slate-50"><div style="position:relative;width:100%;height:100%;overflow:hidden;pointer-events:auto"><div style="width:100%;height:100%"><canvas style="display:block"></canvas></div></div><aside class="absolute left-5 top-5 z-20 flex max-h-[calc(100vh-2.5rem)] w-[340px] max-w-[calc(100vw-2.5rem)] flex-col gap-4 overflow-y-auto rounded-lg border border-white/14 bg-panel p-5 shadow-glass backdrop-blur-2xl"><div><p class="text-xs font-semibold uppercase tracking-[0.18em] text-teal-200">Skadis LiDAR Aligner</p><h1 class="mt-2 text-2xl font-semibold leading-tight text-white">Smooth, align, export.</h1></div><label class="flex cursor-pointer items-center justify-center gap-3 rounded-md border border-dashed border-teal-200/45 bg-white/7 px-4 py-5 text-sm text-slate-100 transition hover:border-teal-200 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M12 13v8"></path><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="m8 17 4-4 4 4"></path></svg><span>Drop STL anywhere, or choose file</span><input type="file" accept=".stl,model/stl" class="sr-only"/></label><div class="rounded-md border border-white/12 bg-black/22 p-4"><div class="mb-3 flex items-center justify-between"><span class="text-sm font-medium text-slate-100">Mode</span><span class="rounded bg-teal-300/14 px-2 py-1 text-sm text-teal-100">Attachment</span></div><div class="grid grid-cols-2 gap-2"><button type="button" class="rounded-md border px-3 py-2 text-sm transition border-teal-200 bg-teal-200/16 text-teal-50">Attachment</button><button type="button" class="rounded-md border px-3 py-2 text-sm transition border-white/12 bg-white/7 text-slate-200">Negative</button></div></div><div class="rounded-md border border-white/12 bg-black/22 p-4"><div class="mb-3 flex items-center justify-between"><span class="text-sm font-medium text-slate-100">Iterations</span><span class="rounded bg-teal-300/14 px-2 py-1 text-sm text-teal-100">8</span></div><input class="range-track w-full" min="0" max="30" step="1" type="range" value="8"/><button type="button" class="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-teal-300 px-3 py-2 text-sm font-semibold text-slate-950 transition hover:bg-teal-200"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Smooth Scan</button></div><div class="grid grid-cols-2 gap-2"><button type="button" class="flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm transition border-teal-200 bg-teal-200/16 text-teal-50"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-move3d"><path d="M5 3v16h16"></path><path d="m5 19 6-6"></path><path d="m2 6 3-3 3 3"></path><path d="m18 16 3 3-3 3"></path></svg>Move</button><button type="button" class="flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm transition border-white/12 bg-white/7 text-slate-200"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>Rotate</button></div><div class="grid grid-cols-2 gap-2"><button type="button" class="rounded-md border border-white/12 bg-white/7 px-3 py-2 text-sm text-slate-200 transition hover:bg-white/12">Reset</button><button type="button" class="flex items-center justify-center gap-2 rounded-md bg-amber-300 px-3 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>Export STL</button></div><p class="rounded-md border border-white/12 bg-black/24 px-3 py-3 text-sm leading-relaxed text-slate-200">Drop a binary or ASCII STL to begin.</p></aside><div class="absolute bottom-5 left-1/2 z-20 -translate-x-1/2 rounded-full border border-white/12 bg-black/35 px-5 py-3 text-sm text-slate-100 shadow-glass backdrop-blur-xl">1. Drop Scan -&gt; 2. Smooth -&gt; 3. Align -&gt; 4. Export.</div></main><script src="/Brians_New_portfolio/_next/static/chunks/webpack-d31e0d924d7c1afa.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/Brians_New_portfolio/_next/static/css/74240942fe03ec09.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"2:I[2846,[],\"\"]\n4:I[9107,[],\"ClientPageRoot\"]\n5:I[1984,[\"689\",\"static/chunks/b536a0f1-7cafcb8c1d7896af.js\",\"870\",\"static/chunks/bd904a5c-800b8c5f11bd43e9.js\",\"950\",\"static/chunks/950-fdb2adeeeddc9253.js\",\"931\",\"static/chunks/app/page-c1156d0ff1a82138.js\"],\"default\",1]\n6:I[4707,[],\"\"]\n7:I[6423,[],\"\"]\n9:I[1060,[],\"\"]\na:[]\n0:[\"$\",\"$L2\",null,{\"buildId\":\"tBuRNBd0bnXeeIDDtImim\",\"assetPrefix\":\"/Brians_New_portfolio\",\"urlParts\":[\"\",\"\"],\"initialTree\":[\"\",{\"children\":[\"__PAGE__\",{}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"__PAGE__\",{},[[\"$L3\",[\"$\",\"$L4\",null,{\"props\":{\"params\":{},\"searchParams\":{}},\"Component\":\"$5\"}],null],null],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/Brians_New_portfolio/_next/static/css/74240942fe03ec09.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"children\":[\"$\",\"$L6\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L7\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\""])</script><script>self.__next_f.push([1,"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],\"notFoundStyles\":[]}]}]}]],null],null],\"couldBeIntercepted\":false,\"initialHead\":[null,\"$L8\"],\"globalErrorComponent\":\"$9\",\"missingSlots\":\"$Wa\"}]\n"])</script><script>self.__next_f.push([1,"8:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"Skadis LiDAR Aligner\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"Smooth, align, and export LiDAR STL scans for Skadis pegboard mounts.\"}]]\n3:null\n"])</script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brian Sawaya | Portfolio</title>
+    <meta
+      name="description"
+      content="Mechanical engineering portfolio for Brian Sawaya."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Work+Sans:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <div>
+          <h1>BRIAN SAWAYA</h1>
+          <p class="subtitle">Mechanical Engineer</p>
+        </div>
+        <nav aria-label="Main navigation">
+          <a href="#portfolio">Portfolio</a>
+          <a href="#experience">Experience</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
+
+      <section id="about" class="intro">
+        <p class="lead">Hi, I am Brian.</p>
+        <p>
+          I am a mechanical engineer and a junior at UC Berkeley. I am looking
+          for opportunities in technical lead and design positions.
+        </p>
+      </section>
+
+      <main id="portfolio" class="portfolio">
+        <div class="section-head">
+          <h2>Selected Projects</h2>
+          <p>Pulled from my Notion portfolio and kept up to date.</p>
+        </div>
+        <div id="project-grid" class="project-grid" aria-live="polite"></div>
+      </main>
+
+      <section id="experience" class="experience">
+        <div class="section-head">
+          <h2>Experience</h2>
+          <p>Roles and leadership work sourced from my LinkedIn profile.</p>
+        </div>
+        <div id="experience-grid" class="experience-grid" aria-live="polite"></div>
+      </section>
+
+      <footer id="contact" class="site-footer">
+        <p>
+          Connect:
+          <a href="https://github.com/Enderblob" target="_blank" rel="noopener noreferrer">GitHub</a>
+          |
+          <a
+            href="https://www.notion.so/Portfolio-2db70f91e75d80ccb266dcffefa91b3c?p=2db70f91e75d8077bf17f4906a774b74&pm=c"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Notion Portfolio</a
+          >
+        </p>
+      </footer>
+    </div>
+
+    <script src="script.js?v=20260421b"></script>
+  </body>
+</html>
