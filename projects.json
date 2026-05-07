@@ -13,6 +13,19 @@
         "notionUrl":  "skadis-lidar-aligner/"
     },
     {
+        "id":  "thryve-energy-aura-test",
+        "collection":  "Interactive Web Experiences",
+        "title":  "Thryve Energy Aura Test",
+        "description":  "Designed and built a high-conversion interactive quiz for Thryve Superfoods, pairing persona-based energy recommendations with a polished branded landing flow.",
+        "tags":  [
+                     "Web Design",
+                     "Interactive Quiz",
+                     "Conversion"
+                 ],
+        "imageUrl":  "thryve-aura-preview.svg",
+        "notionUrl":  "thryve-aura-test.html"
+    },
+    {
         "id":  "2db70f91-e75d-8077-bf17-f4906a774b74",
         "collection":  "Featured Projects",
         "title":  "Pipette Actuation System",
