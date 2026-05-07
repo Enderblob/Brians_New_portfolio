@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  background: #0f1217;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 12%, rgba(39, 147, 129, 0.16), transparent 30%),
+    radial-gradient(circle at 78% 22%, rgba(219, 178, 78, 0.13), transparent 28%),
+    #0f1217;
+  color: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.range-track {
+  accent-color: #68d1bd;
+}
