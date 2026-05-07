@@ -1,5 +1,18 @@
 [
     {
+        "id":  "skadis-lidar-aligner",
+        "collection":  "Computational Design Tools",
+        "title":  "Skadis LiDAR STL Aligner",
+        "description":  "Built a browser-based Three.js tool for loading LiDAR STL scans, smoothing meshes with Taubin filtering, aligning them to a Skadis mount, and exporting attachment or negative mold STL files.",
+        "tags":  [
+                     "Three.js",
+                     "CAD",
+                     "Computational Geometry"
+                 ],
+        "imageUrl":  "skadis-lidar-aligner-preview.svg",
+        "notionUrl":  "skadis-lidar-aligner/"
+    },
+    {
         "id":  "2db70f91-e75d-8077-bf17-f4906a774b74",
         "collection":  "Featured Projects",
         "title":  "Pipette Actuation System",

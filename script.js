@@ -114,9 +114,12 @@ function createExperienceCard(experience, index) {
 async function renderProjects() {
   const grid = document.getElementById("project-grid");
   if (!grid) return;
+  const cacheBust = "20260421b";
 
   try {
-    const response = await fetch("projects.json", { cache: "no-store" });
+    const response = await fetch(`projects.json?v=${cacheBust}`, {
+      cache: "no-store",
+    });
     if (!response.ok) throw new Error(`Failed to load: ${response.status}`);
     const projects = await response.json();
 
@@ -141,9 +144,12 @@ async function renderProjects() {
 async function renderExperiences() {
   const grid = document.getElementById("experience-grid");
   if (!grid) return;
+  const cacheBust = "20260421b";
 
   try {
-    const response = await fetch("experiences.json", { cache: "no-store" });
+    const response = await fetch(`experiences.json?v=${cacheBust}`, {
+      cache: "no-store",
+    });
     if (!response.ok) throw new Error(`Failed to load: ${response.status}`);
     const experiences = await response.json();
 
