@@ -1,4 +1,4 @@
-name: Deploy Skadis LiDAR Aligner To GitHub Pages
+name: Build Portfolio Site
 
 on:
   push:
@@ -7,11 +7,9 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: portfolio-build
   cancel-in-progress: true
 
 jobs:
@@ -43,23 +41,8 @@ jobs:
           cp out/index.txt public-site/skadis-lidar-aligner/index.txt
           touch public-site/.nojekyll
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+      - name: Upload Built Site Artifact
+        uses: actions/upload-artifact@v4
         with:
-          enablement: true
-
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
+          name: public-site
           path: public-site
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy To Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
