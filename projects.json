@@ -1,5 +1,19 @@
 [
     {
+        "id":  "parallelized-linear-array-detector",
+        "collection":  "Interactive CAD Portfolio",
+        "title":  "Parallelized Linear Array Detector",
+        "description":  "Built an interactive Three.js GLTF viewer for a breath-based diagnostic detector assembly, with CAD mesh raycasting, engineering-grade materials, camera focus states, and component-level technical documentation.",
+        "tags":  [
+                     "Three.js",
+                     "GLTF",
+                     "CAD",
+                     "Interactive Portfolio"
+                 ],
+        "imageUrl":  "linear-array-detector-preview.svg",
+        "notionUrl":  "linear-array-detector.html"
+    },
+    {
         "id":  "skadis-lidar-aligner",
         "collection":  "Computational Design Tools",
         "title":  "Skadis LiDAR STL Aligner",
