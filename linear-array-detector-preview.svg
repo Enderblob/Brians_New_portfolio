@@ -1,0 +1,33 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="760" fill="#0d0e12"/>
+  <path d="M0 580H1200M0 620H1200M0 660H1200M0 700H1200M0 740H1200M90 360L0 580M220 360L150 760M350 360L310 760M480 360L470 760M610 360L630 760M740 360L790 760M870 360L950 760M1000 360L1110 760" stroke="#1a2836" stroke-width="2"/>
+  <path d="M480 318L830 316L890 355L537 362L480 318Z" fill="#133e39" stroke="#49e8d7" stroke-width="4"/>
+  <path d="M535 362L890 355L858 434L505 441L535 362Z" fill="#101827" stroke="#26384a" stroke-width="4"/>
+  <path d="M505 441L858 434L813 468L458 474L505 441Z" fill="#0f1722" stroke="#253446" stroke-width="3"/>
+  <path d="M452 294L510 317L535 362L477 342L452 294Z" fill="#526070" stroke="#8da0b4" stroke-width="4"/>
+  <path d="M860 294L918 321L890 355L830 316L860 294Z" fill="#526070" stroke="#8da0b4" stroke-width="4"/>
+  <circle cx="955" cy="376" r="168" fill="#242a31" stroke="#495766" stroke-width="8"/>
+  <path d="M790 345C838 365 866 407 872 444" stroke="#49e8d7" stroke-width="6" stroke-linecap="round"/>
+  <g fill="#aeb8c5" stroke="#d8e0ea" stroke-width="3">
+    <circle cx="546" cy="340" r="15"/>
+    <circle cx="586" cy="342" r="15"/>
+    <circle cx="626" cy="342" r="15"/>
+    <circle cx="666" cy="342" r="15"/>
+    <circle cx="706" cy="342" r="15"/>
+    <circle cx="746" cy="341" r="15"/>
+    <circle cx="786" cy="340" r="15"/>
+  </g>
+  <g stroke="#49e8d7" stroke-width="5" stroke-linecap="round">
+    <path d="M493 456L444 485"/>
+    <path d="M540 454L493 483"/>
+    <path d="M826 444L884 475"/>
+    <path d="M781 446L838 477"/>
+  </g>
+  <rect x="56" y="54" width="480" height="156" rx="8" fill="#0b111c" fill-opacity=".78" stroke="#2b3a4d"/>
+  <text x="88" y="102" fill="#49e8d7" font-family="IBM Plex Mono, Consolas, monospace" font-size="20" letter-spacing="7">CAD DASHBOARD</text>
+  <text x="88" y="146" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="800">Parallelized Linear</text>
+  <text x="88" y="190" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="800">Array Detector</text>
+  <rect x="772" y="92" width="342" height="112" rx="8" fill="#0b111c" fill-opacity=".82" stroke="#2b3a4d"/>
+  <text x="802" y="132" fill="#49e8d7" font-family="IBM Plex Mono, Consolas, monospace" font-size="15" letter-spacing="5">INTERACTIVE GLTF</text>
+  <text x="802" y="169" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Mesh-Level Inspection</text>
+</svg>

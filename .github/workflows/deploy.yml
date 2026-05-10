@@ -33,9 +33,10 @@ jobs:
 
       - name: Compose Portfolio Site
         run: |
-          mkdir -p public-site/skadis-lidar-aligner
-          cp index.html script.js styles.css projects.json experiences.json skadis-lidar-aligner-preview.svg thryve-aura-preview.svg public-site/
-          cp thryve-aura-test.html public-site/
+          mkdir -p public-site/skadis-lidar-aligner public-site/assets
+          cp index.html script.js styles.css projects.json experiences.json skadis-lidar-aligner-preview.svg thryve-aura-preview.svg linear-array-detector-preview.svg public-site/
+          cp thryve-aura-test.html linear-array-detector.html public-site/
+          cp -R assets/models public-site/assets/models
           cp -R out/_next public-site/_next
           cp out/index.html public-site/skadis-lidar-aligner/index.html
           cp out/index.txt public-site/skadis-lidar-aligner/index.txt

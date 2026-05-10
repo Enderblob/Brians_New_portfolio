@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallelized Linear Array Detector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', '"SFMono-Regular"', 'Consolas', 'monospace'],
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            signal: '#49e8d7',
+            caution: '#f4c95d'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0e12;
+      --cyan: #49e8d7;
+      --amber: #f4c95d;
+      --steel: #c8d1dc;
+      --border: rgba(148, 163, 184, 0.23);
+      --panel: rgba(8, 12, 20, 0.76);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: #e5edf7;
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 22% 16%, rgba(73, 232, 215, 0.09), transparent 28rem),
+        radial-gradient(circle at 78% 75%, rgba(244, 201, 93, 0.06), transparent 30rem),
+        linear-gradient(180deg, #101219 0%, #0d0e12 58%, #08090d 100%);
+    }
+
+    #viewport {
+      position: fixed;
+      inset: 0;
+    }
+
+    canvas {
+      display: block;
+      outline: none;
+    }
+
+    .glass {
+      background: linear-gradient(180deg, rgba(12, 18, 30, 0.84), rgba(7, 10, 16, 0.72));
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.055);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .corner-frame {
+      position: relative;
+    }
+
+    .corner-frame::before,
+    .corner-frame::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: rgba(73, 232, 215, 0.76);
+      pointer-events: none;
+    }
+
+    .corner-frame::before {
+      left: -1px;
+      top: -1px;
+      border-left: 1px solid;
+      border-top: 1px solid;
+    }
+
+    .corner-frame::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 1px solid;
+      border-bottom: 1px solid;
+    }
+
+    .scanlines::after {
+      content: "";
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px);
+      background-size: 100% 4px;
+      mix-blend-mode: overlay;
+      opacity: 0.16;
+    }
+
+    .tab-button[aria-selected="true"] {
+      color: #061016;
+      background: var(--cyan);
+      border-color: rgba(73, 232, 215, 0.92);
+    }
+
+    .tab-button[aria-selected="false"] {
+      color: #c7d2e2;
+      background: rgba(15, 23, 42, 0.68);
+      border-color: rgba(148, 163, 184, 0.18);
+    }
+
+    .meter {
+      background: linear-gradient(90deg, rgba(73, 232, 215, 0.94), rgba(244, 201, 93, 0.86));
+      box-shadow: 0 0 22px rgba(73, 232, 215, 0.26);
+    }
+
+    .loader {
+      width: 44px;
+      height: 44px;
+      border: 2px solid rgba(148, 163, 184, 0.22);
+      border-top-color: var(--cyan);
+      border-radius: 999px;
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 900px) {
+      html,
+      body {
+        overflow: auto;
+      }
+
+      #viewport {
+        position: fixed;
+        min-height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body class="scanlines">
+  <main>
+    <div id="viewport" aria-label="Interactive CAD model viewport"></div>
+
+    <header class="pointer-events-none fixed left-4 right-4 top-4 z-20 flex flex-col gap-3 md:left-6 md:right-6">
+      <div class="glass pointer-events-auto mx-auto flex w-full max-w-5xl items-center justify-center gap-3 rounded-md px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-200">
+        <span class="h-2 w-2 rounded-full bg-caution shadow-[0_0_18px_rgba(244,201,93,0.75)]"></span>
+        <span>Need additional CAD files or custom formats? Contact the developer.</span>
+      </div>
+
+      <div class="pointer-events-auto flex items-start justify-between gap-4">
+        <section class="glass corner-frame max-w-xl rounded-md px-5 py-4">
+          <p class="font-mono text-[11px] uppercase tracking-[0.2em] text-signal">Imported CAD Assembly</p>
+          <h1 class="mt-2 text-2xl font-extrabold leading-tight text-white md:text-4xl">Parallelized Linear Array Detector</h1>
+          <p class="mt-2 max-w-lg text-sm leading-6 text-slate-300">
+            Exact GLTF assembly viewer for a rapid breath-based diagnostic proof-of-concept, with mesh-level inspection of the electrodes, ESD fixturing, and low-noise signal PCB.
+          </p>
+        </section>
+
+        <button id="reset-camera" class="glass hidden rounded-md px-4 py-3 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-slate-100 transition hover:border-signal hover:text-signal md:block">
+          Reset Camera
+        </button>
+      </div>
+    </header>
+
+    <aside class="glass corner-frame pointer-events-auto fixed bottom-4 left-4 right-4 z-30 max-h-[56vh] overflow-hidden rounded-md md:bottom-auto md:left-auto md:right-6 md:top-36 md:w-[440px] md:max-h-[calc(100vh-10.5rem)]">
+      <div class="border-b border-slate-700/60 px-5 py-4">
+        <div class="flex items-center justify-between gap-3">
+          <p id="panel-kicker" class="font-mono text-[11px] uppercase tracking-[0.2em] text-signal">System Overview</p>
+          <span id="part-status" class="rounded border border-slate-600/70 bg-slate-950/60 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300">Ready</span>
+        </div>
+        <h2 id="panel-title" class="mt-3 text-2xl font-bold leading-tight text-white">Parallelized Linear Array Detector</h2>
+        <p id="panel-summary" class="mt-3 text-sm leading-6 text-slate-300">
+          A rapid breath-based diagnostic proof-of-concept built around parallelized ion detection. Hover over and click components of the actual CAD model to inspect the mechanical and electrical design decisions.
+        </p>
+      </div>
+
+      <div class="px-5 py-4">
+        <div id="tab-list" class="grid grid-cols-3 gap-2" role="tablist" aria-label="Component detail tabs"></div>
+      </div>
+
+      <div id="panel-content" class="max-h-[30vh] overflow-y-auto px-5 pb-5 text-sm leading-6 text-slate-300 md:max-h-[44vh]"></div>
+    </aside>
+
+    <div class="pointer-events-none fixed bottom-6 left-6 z-20 hidden w-[320px] md:block">
+      <div class="glass rounded-md p-4 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-300">
+        <div class="mb-3 flex items-center justify-between">
+          <span>Raycast Target</span>
+          <span id="hover-readout" class="text-signal">None</span>
+        </div>
+        <div class="h-1.5 overflow-hidden rounded-full bg-slate-800">
+          <div class="meter h-full w-2/3 rounded-full"></div>
+        </div>
+        <div class="mt-3 grid grid-cols-3 gap-2 text-center text-[10px]">
+          <span class="rounded border border-slate-700/60 py-1">Orbit</span>
+          <span class="rounded border border-slate-700/60 py-1">Zoom</span>
+          <span class="rounded border border-slate-700/60 py-1">Inspect</span>
+        </div>
+      </div>
+    </div>
+
+    <button id="mobile-reset" class="glass fixed bottom-[calc(56vh+2rem)] right-4 z-30 rounded-md px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-100 md:hidden">
+      Reset Camera
+    </button>
+
+    <div id="loading" class="fixed inset-0 z-40 grid place-items-center bg-[#0d0e12]/80 backdrop-blur-sm">
+      <div class="glass rounded-md px-8 py-7 text-center">
+        <div class="loader mx-auto"></div>
+        <p class="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-slate-200">Loading imported CAD assembly</p>
+        <p id="loader-note" class="mt-2 max-w-xs text-xs leading-5 text-slate-400">Fetching ./assets/models/linear_array.gltf</p>
+      </div>
+    </div>
+  </main>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+    const MODEL_URL = './assets/models/linear_array.gltf';
+    const viewport = document.getElementById('viewport');
+    const loading = document.getElementById('loading');
+    const loaderNote = document.getElementById('loader-note');
+    const hoverReadout = document.getElementById('hover-readout');
+    const resetButtons = [document.getElementById('reset-camera'), document.getElementById('mobile-reset')];
+
+    const COMPONENTS = {
+      spades: {
+        title: 'Micro-Scale Spade Electrodes',
+        status: 'Electrodes',
+        accent: '#49e8d7',
+        meshNames: [
+          '.781',
+          'occurrence of .781',
+          'ESB_Linear_Array_Hole_Design 1 (1) <1>',
+          'occurrence of ESB_Linear_Array_Hole_Design 1 (1) <1>',
+          '[REF-ONLY]accelerator_plate',
+          'occurrence of [REF-ONLY]accelerator_plate'
+        ],
+        keywords: ['spade', 'electrode', 'hole_design', 'accelerator_plate', 'linear_array_hole'],
+        summary: 'Laser-cut low-carbon steel electrodes evolved into a spade geometry that improves PCB contact, alignment, and signal transfer while preserving high ion transmittance.',
+        tabs: {
+          'Design Constraint': [
+            'Strict 4:1 ratio of electrode width to ion hole diameter.',
+            'High transmittance target of >= 60% was achieved by transitioning from 19 center holes to 37 holes in the final iteration.'
+          ],
+          Manufacturing: [
+            'Cut from 3.125 mm thick low-carbon steel sheet metal using a Fablight laser cutter.',
+            'Followed by manual deburring/polishing.'
+          ],
+          'Design Evolution': [
+            'Iteration 1 (Circle): Circular electrode constrained by 3 rods. Rejected due to high assembly difficulty and Fablight spacing limits.',
+            'Iteration 2 (Square): 4-rod system with 0.2mm, 0.4mm, and 0.7mm center hole testing. Rejected because the PCB interface was tangent, resulting in weak signal coupling.',
+            'Iteration 3 (Spade): Added a flat "stem" surface for the PCB to rest directly on, optimizing alignment and signal transfer.'
+          ]
+        }
+      },
+      fixture: {
+        title: 'Precision Alignment & Fixturing System',
+        status: 'Fixturing',
+        accent: '#f4c95d',
+        meshNames: [
+          '91595A112_Dowel Pin',
+          'occurrence of 91595A112_Dowel Pin',
+          'Hex nut grade A & B M2x0.4',
+          'Hex socket head cap screw M2x0.40 x 6',
+          'Hex socket head cap screw M2x0.40 x 8',
+          'Hex socket head cap screw M3x0.50 x 12',
+          'Hex socket head cap screw M3x0.50 x 6',
+          'Part 2',
+          'Part 3',
+          'vinyl spacer'
+        ],
+        keywords: ['dowel', 'pin', 'spacer', 'bracket', 'socket', 'screw', 'nut', 'fastener', 'part 2', 'part 3', 'vinyl'],
+        summary: 'A static-safe bracket, dowel, and spacer system keeps the electrode stack precisely aligned while preventing charge buildup from corrupting ion trajectories.',
+        tabs: {
+          'Alignment Constraints': [
+            'Precise 3mm alloy steel dowel pins and M3/M2 fasteners maintain tight tolerances and prevent electrode shifting.'
+          ],
+          'Material Selection': [
+            'SLA printed using ESD (Electrostatic Dissipative) Resin.'
+          ],
+          'Engineering Reasoning': [
+            'Standard insulating plastics accumulate static charge in vacuum systems, which distorts the electric fields and alters ion trajectories.',
+            'ESD resin allows static charges to safely bleed off.',
+            'Critical datum holes on the printed brackets were reinforced using PLA printed supports and high-precision reaming on a standard mill with a 3mm reamer.'
+          ]
+        }
+      },
+      pcb: {
+        title: 'Low-Noise Six-Layer Signal PCB',
+        status: 'Signal PCB',
+        accent: '#7dd3fc',
+        meshNames: [
+          'ESB_Linear_Array_PCB',
+          'occurrence of ESB_Linear_Array_PCB'
+        ],
+        keywords: ['pcb', 'board', 'fr4', 'trace', 'signal'],
+        summary: 'A six-layer signal board uses internal routing, continuous ground planes, and angled trace exits to protect low-level detector signals from capacitance and crosstalk.',
+        tabs: {
+          'Layer Stackup': [
+            '6-layer stackup. Top (Layer 1) and Bottom (Layer 6) are continuous ground planes.',
+            'Signal lines are embedded on internal layers (Layers 3 & 4) separated from ground by thick dielectric-only layers.'
+          ],
+          'Engineering Reasoning': [
+            'Increasing the physical distance between signal traces and ground planes reduces parasitic capacitance.',
+            'Continuous ground planes isolate adjacent signal layers, reducing inter-trace crosstalk and near-field electromagnetic coupling.'
+          ],
+          'Trace Geometry': [
+            'Traces exit pads at slight angles to rapidly increase spacing in high-density areas, minimizing impedance discontinuities and preserving signal integrity.'
+          ]
+        }
+      }
+    };
+
+    const DEFAULT_PANEL = {
+      title: 'Parallelized Linear Array Detector',
+      status: 'Ready',
+      kicker: 'System Overview',
+      summary: 'A rapid breath-based diagnostic proof-of-concept built around parallelized ion detection. Hover over and click components of the actual CAD model to inspect the mechanical and electrical design decisions.',
+      tabs: {
+        Overview: [
+          'This viewer loads the exported GLTF assembly directly from ./assets/models/linear_array.gltf.',
+          'Every visible interaction is driven by raycasting against imported CAD meshes.'
+        ],
+        'Mesh Mapping': [
+          'The loader logs every CAD mesh name to the console with: Found mesh in CAD file.',
+          'Named meshes are mapped to electrodes, ESD fixturing, and the PCB through the COMPONENTS dictionary at the top of the script.'
+        ],
+        Fallback: [
+          'If a mesh name is changed later, clicking still resolves to the nearest general detector subsystem using bounding-box position and parent grouping.'
+        ]
+      }
+    };
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#0d0e12');
+    scene.fog = new THREE.Fog('#0d0e12', 12, 42);
+
+    const camera = new THREE.PerspectiveCamera(45, viewport.clientWidth / viewport.clientHeight, 0.01, 1000);
+    camera.position.set(4, 2.7, 5.4);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    viewport.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.minDistance = 0.5;
+    controls.maxDistance = 30;
+    controls.target.set(0, 0, 0);
+
+    const grid = new THREE.GridHelper(16, 64, '#29384a', '#172230');
+    grid.position.y = -0.02;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.42;
+    scene.add(grid);
+
+    const axes = new THREE.AxesHelper(1.2);
+    axes.position.set(-2.2, 0.01, -1.8);
+    axes.material.depthTest = false;
+    scene.add(axes);
+
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(80, 80),
+      new THREE.ShadowMaterial({ color: '#05070b', opacity: 0.28 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -0.035;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const ambient = new THREE.AmbientLight('#dbeafe', 0.58);
+    const key = new THREE.DirectionalLight('#ffffff', 2.8);
+    key.position.set(5, 7, 4);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.camera.near = 0.1;
+    key.shadow.camera.far = 60;
+    key.shadow.camera.left = -8;
+    key.shadow.camera.right = 8;
+    key.shadow.camera.top = 8;
+    key.shadow.camera.bottom = -8;
+
+    const rim = new THREE.DirectionalLight('#49e8d7', 1.45);
+    rim.position.set(-6, 3, -5);
+    const warmFill = new THREE.DirectionalLight('#f4c95d', 0.48);
+    warmFill.position.set(3, 2, -6);
+    scene.add(ambient, key, rim, warmFill);
+
+    const modelRoot = new THREE.Group();
+    modelRoot.name = 'ImportedLinearArrayRoot';
+    scene.add(modelRoot);
+
+    const materials = {
+      spades: new THREE.MeshStandardMaterial({
+        color: '#c8d1dc',
+        metalness: 0.92,
+        roughness: 0.28,
+        envMapIntensity: 1.0,
+        emissive: '#000000'
+      }),
+      fixture: new THREE.MeshPhysicalMaterial({
+        color: '#172131',
+        metalness: 0.02,
+        roughness: 0.72,
+        transmission: 0.05,
+        transparent: true,
+        opacity: 0.88,
+        clearcoat: 0.18,
+        clearcoatRoughness: 0.55,
+        emissive: '#000000'
+      }),
+      pcb: new THREE.MeshStandardMaterial({
+        color: '#123f37',
+        metalness: 0.08,
+        roughness: 0.62,
+        emissive: '#000000'
+      }),
+      hardware: new THREE.MeshStandardMaterial({
+        color: '#aeb8c5',
+        metalness: 0.9,
+        roughness: 0.22,
+        emissive: '#000000'
+      }),
+      unknown: new THREE.MeshStandardMaterial({
+        color: '#667085',
+        metalness: 0.38,
+        roughness: 0.44,
+        emissive: '#000000'
+      })
+    };
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    const interactiveMeshes = [];
+    const subsystemBounds = new Map();
+    let hovered = null;
+    let selectedPart = null;
+    let focusAnimation = null;
+    let modelBounds = new THREE.Box3(new THREE.Vector3(-1, -1, -1), new THREE.Vector3(1, 1, 1));
+    let defaultCameraState = {
+      position: camera.position.clone(),
+      target: controls.target.clone()
+    };
+
+    function exactOrKeywordPart(name) {
+      const normalized = String(name || '').toLowerCase();
+      for (const [partId, config] of Object.entries(COMPONENTS)) {
+        if (config.meshNames.some((meshName) => meshName.toLowerCase() === normalized)) return partId;
+        if (config.keywords.some((keyword) => normalized.includes(keyword))) return partId;
+      }
+      return null;
+    }
+
+    function materialForPart(partId, name) {
+      const normalized = String(name || '').toLowerCase();
+      if (normalized.includes('screw') || normalized.includes('nut') || normalized.includes('dowel') || normalized.includes('pin')) {
+        return materials.hardware.clone();
+      }
+      return (materials[partId] || materials.unknown).clone();
+    }
+
+    function classifyByBoundingBox(point) {
+      if (subsystemBounds.size) {
+        let bestPart = null;
+        let bestDistance = Infinity;
+        for (const [partId, box] of subsystemBounds.entries()) {
+          const clamped = point.clone().clamp(box.min, box.max);
+          const distance = clamped.distanceTo(point);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestPart = partId;
+          }
+        }
+        if (bestPart) return bestPart;
+      }
+
+      const size = modelBounds.getSize(new THREE.Vector3());
+      const center = modelBounds.getCenter(new THREE.Vector3());
+      const relY = (point.y - center.y) / Math.max(size.y, 0.0001);
+      const relZ = (point.z - center.z) / Math.max(size.z, 0.0001);
+      if (relY > 0.18) return 'spades';
+      if (relY < -0.18 || Math.abs(relZ) < 0.16) return 'pcb';
+      return 'fixture';
+    }
+
+    function expandSubsystemBounds(partId, object) {
+      if (!partId) return;
+      const box = new THREE.Box3().setFromObject(object);
+      if (box.isEmpty()) return;
+      if (!subsystemBounds.has(partId)) {
+        subsystemBounds.set(partId, box.clone());
+      } else {
+        subsystemBounds.get(partId).union(box);
+      }
+    }
+
+    function styleAndRegisterCAD(sceneObject) {
+      sceneObject.traverse((child) => {
+        if (!child.isMesh) return;
+
+        console.log('Found mesh in CAD file:', child.name);
+
+        const parentName = child.parent?.name || '';
+        const partId = exactOrKeywordPart(child.name) || exactOrKeywordPart(parentName);
+        child.userData.partId = partId;
+        child.userData.originalName = child.name;
+        child.material = materialForPart(partId, `${child.name} ${parentName}`);
+        child.castShadow = true;
+        child.receiveShadow = true;
+
+        if (child.geometry) {
+          child.geometry.computeBoundingBox();
+          child.geometry.computeBoundingSphere();
+        }
+
+        interactiveMeshes.push(child);
+        expandSubsystemBounds(partId, child);
+      });
+    }
+
+    function centerAndScaleModel(object) {
+      const initialBox = new THREE.Box3().setFromObject(object);
+      const initialSize = initialBox.getSize(new THREE.Vector3());
+      const initialCenter = initialBox.getCenter(new THREE.Vector3());
+      const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z) || 1;
+      const targetSize = 4.25;
+      const scale = targetSize / maxAxis;
+
+      object.position.sub(initialCenter);
+      object.scale.multiplyScalar(scale);
+      object.updateMatrixWorld(true);
+
+      modelBounds = new THREE.Box3().setFromObject(object);
+      const finalCenter = modelBounds.getCenter(new THREE.Vector3());
+      object.position.sub(finalCenter);
+      object.updateMatrixWorld(true);
+      modelBounds = new THREE.Box3().setFromObject(object);
+
+      grid.position.y = modelBounds.min.y - 0.025;
+      floor.position.y = modelBounds.min.y - 0.03;
+      fitCameraToObject(modelBounds);
+    }
+
+    function fitCameraToObject(box) {
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      const fov = THREE.MathUtils.degToRad(camera.fov);
+      const distance = (maxDim / (2 * Math.tan(fov / 2))) * 1.72;
+      const direction = new THREE.Vector3(0.82, 0.48, 0.92).normalize();
+
+      camera.near = Math.max(distance / 200, 0.001);
+      camera.far = distance * 80;
+      camera.updateProjectionMatrix();
+      camera.position.copy(center).add(direction.multiplyScalar(distance));
+      controls.target.copy(center);
+      controls.minDistance = Math.max(distance * 0.16, 0.1);
+      controls.maxDistance = distance * 4;
+      controls.update();
+
+      defaultCameraState = {
+        position: camera.position.clone(),
+        target: controls.target.clone()
+      };
+    }
+
+    function loadCADModel() {
+      const loader = new GLTFLoader();
+      loader.load(
+        MODEL_URL,
+        (gltf) => {
+          const cad = gltf.scene;
+          cad.name = 'LinearArrayCAD';
+          modelRoot.add(cad);
+          centerAndScaleModel(modelRoot);
+          styleAndRegisterCAD(cad);
+          modelRoot.updateMatrixWorld(true);
+          subsystemBounds.clear();
+          interactiveMeshes.forEach((mesh) => expandSubsystemBounds(mesh.userData.partId, mesh));
+          hideLoader('Imported CAD assembly loaded');
+        },
+        (event) => {
+          if (event.total) {
+            loaderNote.textContent = `Loading CAD assembly ${Math.round((event.loaded / event.total) * 100)}%`;
+          }
+        },
+        (error) => {
+          console.error('Failed to load imported CAD GLTF:', error);
+          loaderNote.textContent = 'Could not load ./assets/models/linear_array.gltf';
+          loading.querySelector('.loader').style.display = 'none';
+        }
+      );
+    }
+
+    function hideLoader(message) {
+      loaderNote.textContent = message;
+      setTimeout(() => {
+        loading.style.opacity = '0';
+        loading.style.pointerEvents = 'none';
+        loading.style.transition = 'opacity 260ms ease';
+      }, 240);
+    }
+
+    function setPointerFromEvent(event) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    }
+
+    function findIntersection(event) {
+      setPointerFromEvent(event);
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(interactiveMeshes, true);
+      if (!hits.length) return null;
+      const hit = hits[0];
+      const namedPart = hit.object.userData.partId || exactOrKeywordPart(hit.object.name) || exactOrKeywordPart(hit.object.parent?.name);
+      return {
+        ...hit,
+        partId: namedPart || classifyByBoundingBox(hit.point)
+      };
+    }
+
+    function setMeshGlow(mesh, partId, active) {
+      const accent = active ? COMPONENTS[partId]?.accent || '#49e8d7' : '#000000';
+      const intensity = active ? 0.36 : 0;
+      if (!mesh.material) return;
+      if (mesh.material.emissive) {
+        mesh.material.emissive.set(accent);
+        mesh.material.emissiveIntensity = intensity;
+      } else if (active && mesh.material.color) {
+        mesh.material.color.offsetHSL(0, 0, 0.08);
+      }
+    }
+
+    function updateHover(event) {
+      const hit = findIntersection(event);
+      if (hovered?.object && (!hit || hit.object !== hovered.object)) {
+        setMeshGlow(hovered.object, hovered.partId, false);
+      }
+      hovered = hit;
+      if (hit) {
+        setMeshGlow(hit.object, hit.partId, true);
+        renderer.domElement.style.cursor = 'pointer';
+        hoverReadout.textContent = COMPONENTS[hit.partId]?.status || 'CAD Mesh';
+      } else {
+        renderer.domElement.style.cursor = 'grab';
+        hoverReadout.textContent = 'None';
+      }
+    }
+
+    function focusOnPart(partId) {
+      const box = subsystemBounds.get(partId) || modelBounds;
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      const distance = Math.max(maxDim * 3.1, defaultCameraState.position.distanceTo(defaultCameraState.target) * 0.38);
+      const angleBias = {
+        spades: new THREE.Vector3(0.45, 0.34, 1.0),
+        fixture: new THREE.Vector3(-0.8, 0.46, 0.85),
+        pcb: new THREE.Vector3(0.55, 0.82, 0.78)
+      }[partId] || new THREE.Vector3(0.8, 0.5, 0.9);
+      startCameraAnimation(center.clone().add(angleBias.normalize().multiplyScalar(distance)), center);
+    }
+
+    function startCameraAnimation(position, target) {
+      focusAnimation = {
+        started: performance.now(),
+        duration: 940,
+        fromPosition: camera.position.clone(),
+        toPosition: position.clone(),
+        fromTarget: controls.target.clone(),
+        toTarget: target.clone()
+      };
+    }
+
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function updateCameraAnimation(now) {
+      if (!focusAnimation) return;
+      const progress = Math.min((now - focusAnimation.started) / focusAnimation.duration, 1);
+      const eased = easeInOutCubic(progress);
+      camera.position.lerpVectors(focusAnimation.fromPosition, focusAnimation.toPosition, eased);
+      controls.target.lerpVectors(focusAnimation.fromTarget, focusAnimation.toTarget, eased);
+      if (progress >= 1) focusAnimation = null;
+    }
+
+    function renderTabs(data, initialTab = Object.keys(data.tabs)[0]) {
+      const tabList = document.getElementById('tab-list');
+      const content = document.getElementById('panel-content');
+      tabList.innerHTML = '';
+
+      const renderContent = (tabName) => {
+        content.innerHTML = '';
+        const wrapper = document.createElement('div');
+        wrapper.className = 'space-y-3';
+        data.tabs[tabName].forEach((item) => {
+          const row = document.createElement('article');
+          row.className = 'rounded border border-slate-700/60 bg-slate-950/40 p-3';
+          row.innerHTML = `<p class="font-mono text-[11px] uppercase tracking-[0.16em] text-slate-500">${tabName}</p><p class="mt-1">${item}</p>`;
+          wrapper.appendChild(row);
+        });
+        content.appendChild(wrapper);
+      };
+
+      Object.keys(data.tabs).forEach((tabName) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'tab-button rounded border px-2 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] transition';
+        button.textContent = tabName;
+        button.setAttribute('role', 'tab');
+        button.setAttribute('aria-selected', tabName === initialTab ? 'true' : 'false');
+        button.addEventListener('click', () => {
+          tabList.querySelectorAll('.tab-button').forEach((tab) => tab.setAttribute('aria-selected', 'false'));
+          button.setAttribute('aria-selected', 'true');
+          renderContent(tabName);
+        });
+        tabList.appendChild(button);
+      });
+
+      renderContent(initialTab);
+    }
+
+    function updatePanel(data, kicker = 'Component Selected') {
+      document.getElementById('panel-kicker').textContent = kicker;
+      document.getElementById('part-status').textContent = data.status;
+      document.getElementById('panel-title').textContent = data.title;
+      document.getElementById('panel-summary').textContent = data.summary;
+      renderTabs(data);
+    }
+
+    function selectPart(partId) {
+      const data = COMPONENTS[partId];
+      if (!data) return;
+      selectedPart = partId;
+      updatePanel(data);
+      focusOnPart(partId);
+    }
+
+    function resetCamera() {
+      selectedPart = null;
+      updatePanel(DEFAULT_PANEL, DEFAULT_PANEL.kicker);
+      startCameraAnimation(defaultCameraState.position, defaultCameraState.target);
+    }
+
+    renderer.domElement.addEventListener('pointermove', updateHover);
+    renderer.domElement.addEventListener('pointerleave', () => {
+      if (hovered?.object) setMeshGlow(hovered.object, hovered.partId, false);
+      hovered = null;
+      renderer.domElement.style.cursor = 'grab';
+      hoverReadout.textContent = 'None';
+    });
+    renderer.domElement.addEventListener('click', (event) => {
+      const hit = findIntersection(event);
+      if (hit) selectPart(hit.partId);
+    });
+    resetButtons.forEach((button) => button.addEventListener('click', resetCamera));
+
+    window.addEventListener('resize', () => {
+      const width = viewport.clientWidth;
+      const height = viewport.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    });
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+      updateCameraAnimation(now);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    updatePanel(DEFAULT_PANEL, DEFAULT_PANEL.kicker);
+    loadCADModel();
+    animate(performance.now());
+  </script>
+</body>
+</html>

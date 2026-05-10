@@ -114,7 +114,7 @@ function createExperienceCard(experience, index) {
 async function renderProjects() {
   const grid = document.getElementById("project-grid");
   if (!grid) return;
-  const cacheBust = "20260421b";
+  const cacheBust = "20260510-linear-array";
 
   try {
     const response = await fetch(`projects.json?v=${cacheBust}`, {
@@ -144,7 +144,7 @@ async function renderProjects() {
 async function renderExperiences() {
   const grid = document.getElementById("experience-grid");
   if (!grid) return;
-  const cacheBust = "20260421b";
+  const cacheBust = "20260510-linear-array";
 
   try {
     const response = await fetch(`experiences.json?v=${cacheBust}`, {
