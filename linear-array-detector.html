@@ -369,14 +369,17 @@
     const camera = new THREE.PerspectiveCamera(45, viewport.clientWidth / viewport.clientHeight, 0.01, 1000);
     camera.position.set(4, 2.7, 5.4);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: 'high-performance'
+    });
     renderer.setSize(viewport.clientWidth, viewport.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 900 ? 1 : 1.25));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.08;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     viewport.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -410,7 +413,7 @@
     const key = new THREE.DirectionalLight('#ffffff', 2.8);
     key.position.set(5, 7, 4);
     key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.mapSize.set(1024, 1024);
     key.shadow.camera.near = 0.1;
     key.shadow.camera.far = 60;
     key.shadow.camera.left = -8;
@@ -427,6 +430,10 @@
     const modelRoot = new THREE.Group();
     modelRoot.name = 'ImportedLinearArrayRoot';
     scene.add(modelRoot);
+
+    const selectionCloneGroup = new THREE.Group();
+    selectionCloneGroup.name = 'SelectedComponentExtraction';
+    modelRoot.add(selectionCloneGroup);
 
     const materials = {
       spades: new THREE.MeshStandardMaterial({
@@ -470,10 +477,15 @@
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
     const interactiveMeshes = [];
+    const subsystemMeshes = new Map();
     const subsystemBounds = new Map();
     let hovered = null;
     let selectedPart = null;
     let focusAnimation = null;
+    let separationAnimation = null;
+    let renderRequested = false;
+    let isInteracting = false;
+    let lastHoverRaycast = 0;
     let modelBounds = new THREE.Box3(new THREE.Vector3(-1, -1, -1), new THREE.Vector3(1, 1, 1));
     let defaultCameraState = {
       position: camera.position.clone(),
@@ -532,19 +544,26 @@
       }
     }
 
+    function addSubsystemMesh(partId, mesh) {
+      if (!partId) return;
+      if (!subsystemMeshes.has(partId)) subsystemMeshes.set(partId, []);
+      subsystemMeshes.get(partId).push(mesh);
+    }
+
     function styleAndRegisterCAD(sceneObject) {
       sceneObject.traverse((child) => {
         if (!child.isMesh) return;
 
         console.log('Found mesh in CAD file:', child.name);
 
-        const parentName = child.parent?.name || '';
+        const parentName = child.userData.originalParentName || child.parent?.name || '';
         const partId = exactOrKeywordPart(child.name) || exactOrKeywordPart(parentName);
         child.userData.partId = partId;
         child.userData.originalName = child.name;
+        child.userData.homePosition = child.position.clone();
         child.material = materialForPart(partId, `${child.name} ${parentName}`);
-        child.castShadow = true;
-        child.receiveShadow = true;
+        child.castShadow = false;
+        child.receiveShadow = false;
 
         if (child.geometry) {
           child.geometry.computeBoundingBox();
@@ -552,8 +571,24 @@
         }
 
         interactiveMeshes.push(child);
+        addSubsystemMesh(partId, child);
         expandSubsystemBounds(partId, child);
       });
+    }
+
+    function flattenCadMeshes(sceneObject) {
+      sceneObject.updateWorldMatrix(true, true);
+      const meshes = [];
+      sceneObject.traverse((child) => {
+        if (!child.isMesh) return;
+        child.userData.originalParentName = child.parent?.name || '';
+        meshes.push(child);
+      });
+
+      meshes.forEach((mesh) => {
+        modelRoot.attach(mesh);
+      });
+      modelRoot.updateMatrixWorld(true);
     }
 
     function centerAndScaleModel(object) {
@@ -611,11 +646,13 @@
           cad.name = 'LinearArrayCAD';
           modelRoot.add(cad);
           centerAndScaleModel(modelRoot);
-          styleAndRegisterCAD(cad);
+          flattenCadMeshes(cad);
+          styleAndRegisterCAD(modelRoot);
           modelRoot.updateMatrixWorld(true);
           subsystemBounds.clear();
           interactiveMeshes.forEach((mesh) => expandSubsystemBounds(mesh.userData.partId, mesh));
           hideLoader('Imported CAD assembly loaded');
+          requestRender();
         },
         (event) => {
           if (event.total) {
@@ -636,6 +673,7 @@
         loading.style.opacity = '0';
         loading.style.pointerEvents = 'none';
         loading.style.transition = 'opacity 260ms ease';
+        requestRender();
       }, 240);
     }
 
@@ -671,6 +709,9 @@
     }
 
     function updateHover(event) {
+      const now = performance.now();
+      if (now - lastHoverRaycast < 48) return;
+      lastHoverRaycast = now;
       const hit = findIntersection(event);
       if (hovered?.object && (!hit || hit.object !== hovered.object)) {
         setMeshGlow(hovered.object, hovered.partId, false);
@@ -684,20 +725,104 @@
         renderer.domElement.style.cursor = 'grab';
         hoverReadout.textContent = 'None';
       }
+      requestRender();
     }
 
-    function focusOnPart(partId) {
-      const box = subsystemBounds.get(partId) || modelBounds;
+    function focusOnPart(partId, primaryMesh = null) {
+      const box = primaryMesh ? new THREE.Box3().setFromObject(primaryMesh) : subsystemBounds.get(partId) || modelBounds;
       const center = box.getCenter(new THREE.Vector3());
       const size = box.getSize(new THREE.Vector3());
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      const distance = Math.max(maxDim * 3.1, defaultCameraState.position.distanceTo(defaultCameraState.target) * 0.38);
+      const wholeSize = modelBounds.getSize(new THREE.Vector3());
+      const wholeMax = Math.max(wholeSize.x, wholeSize.y, wholeSize.z) || 1;
+      const distance = Math.max(maxDim * 4.8, wholeMax * 1.35, defaultCameraState.position.distanceTo(defaultCameraState.target) * 0.62);
       const angleBias = {
         spades: new THREE.Vector3(0.45, 0.34, 1.0),
         fixture: new THREE.Vector3(-0.8, 0.46, 0.85),
         pcb: new THREE.Vector3(0.55, 0.82, 0.78)
       }[partId] || new THREE.Vector3(0.8, 0.5, 0.9);
-      startCameraAnimation(center.clone().add(angleBias.normalize().multiplyScalar(distance)), center);
+      const focusTarget = center.clone().add(offsetForPart(partId).multiplyScalar(0.35));
+      startCameraAnimation(focusTarget.clone().add(angleBias.normalize().multiplyScalar(distance)), focusTarget);
+    }
+
+    function offsetForPart(partId) {
+      const size = modelBounds.getSize(new THREE.Vector3());
+      const amount = Math.max(Math.max(size.x, size.y, size.z) * 0.28, 0.64);
+      const offsets = {
+        spades: new THREE.Vector3(-amount * 1.15, amount * 0.95, amount * 1.2),
+        fixture: new THREE.Vector3(-amount * 1.55, amount * 0.42, -amount * 0.65),
+        pcb: new THREE.Vector3(-amount * 1.35, -amount * 0.75, amount * 1.25)
+      };
+      return offsets[partId] || new THREE.Vector3(0, amount, 0);
+    }
+
+    function startSeparationAnimation(partId, primaryMesh = null) {
+      const targets = new Map();
+      const selectedOffset = partId ? offsetForPart(partId) : new THREE.Vector3();
+      buildExtractedSelection(primaryMesh, partId, selectedOffset);
+
+      interactiveMeshes.forEach((mesh) => {
+        const home = mesh.userData.homePosition || mesh.position.clone();
+        const isSelected = partId && (primaryMesh ? mesh === primaryMesh : mesh.userData.partId === partId);
+        targets.set(mesh, {
+          from: mesh.position.clone(),
+          to: isSelected ? home.clone().add(selectedOffset) : home.clone(),
+          opacity: isSelected || !partId ? 1 : 0.08
+        });
+
+        if (mesh.material) {
+          mesh.material.transparent = true;
+          mesh.material.depthWrite = isSelected || !partId;
+        }
+      });
+
+      separationAnimation = {
+        started: performance.now(),
+        duration: 520,
+        targets
+      };
+      requestRender();
+    }
+
+    function buildExtractedSelection(primaryMesh, partId, offset) {
+      selectionCloneGroup.clear();
+      if (!primaryMesh || !partId) return;
+
+      const clone = primaryMesh.clone();
+      clone.geometry = primaryMesh.geometry;
+      clone.material = new THREE.MeshStandardMaterial({
+        color: COMPONENTS[partId]?.accent || '#49e8d7',
+        metalness: partId === 'fixture' ? 0.15 : 0.58,
+        roughness: 0.26,
+        transparent: true,
+        opacity: 0.92,
+        emissive: COMPONENTS[partId]?.accent || '#49e8d7',
+        emissiveIntensity: 0.18
+      });
+      clone.position.copy(primaryMesh.userData.homePosition || primaryMesh.position).add(offset.clone().multiplyScalar(1.75));
+      clone.rotation.copy(primaryMesh.rotation);
+      clone.scale.copy(primaryMesh.scale);
+      clone.userData.partId = null;
+      clone.castShadow = false;
+      clone.receiveShadow = false;
+      selectionCloneGroup.add(clone);
+    }
+
+    function updateSeparationAnimation(now) {
+      if (!separationAnimation) return;
+      const progress = Math.min((now - separationAnimation.started) / separationAnimation.duration, 1);
+      const eased = easeInOutCubic(progress);
+
+      separationAnimation.targets.forEach((target, mesh) => {
+        mesh.position.lerpVectors(target.from, target.to, eased);
+        if (mesh.material) {
+          const current = mesh.material.opacity ?? 1;
+          mesh.material.opacity = current + (target.opacity - current) * Math.min(eased + 0.18, 1);
+        }
+      });
+
+      modelRoot.updateMatrixWorld(true);
+      if (progress >= 1) separationAnimation = null;
     }
 
     function startCameraAnimation(position, target) {
@@ -709,6 +834,7 @@
         fromTarget: controls.target.clone(),
         toTarget: target.clone()
       };
+      requestRender();
     }
 
     function easeInOutCubic(t) {
@@ -768,17 +894,18 @@
       renderTabs(data);
     }
 
-    function selectPart(partId) {
+    function selectPart(partId, primaryMesh = null) {
       const data = COMPONENTS[partId];
       if (!data) return;
       selectedPart = partId;
       updatePanel(data);
-      focusOnPart(partId);
+      startSeparationAnimation(partId, primaryMesh);
     }
 
     function resetCamera() {
       selectedPart = null;
       updatePanel(DEFAULT_PANEL, DEFAULT_PANEL.kicker);
+      startSeparationAnimation(null);
       startCameraAnimation(defaultCameraState.position, defaultCameraState.target);
     }
 
@@ -788,12 +915,22 @@
       hovered = null;
       renderer.domElement.style.cursor = 'grab';
       hoverReadout.textContent = 'None';
+      requestRender();
     });
     renderer.domElement.addEventListener('click', (event) => {
       const hit = findIntersection(event);
-      if (hit) selectPart(hit.partId);
+      if (hit) selectPart(hit.partId, hit.object);
     });
     resetButtons.forEach((button) => button.addEventListener('click', resetCamera));
+    controls.addEventListener('start', () => {
+      isInteracting = true;
+      requestRender();
+    });
+    controls.addEventListener('end', () => {
+      isInteracting = false;
+      requestRender();
+    });
+    controls.addEventListener('change', requestRender);
 
     window.addEventListener('resize', () => {
       const width = viewport.clientWidth;
@@ -801,19 +938,28 @@
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 900 ? 1 : 1.25));
+      requestRender();
     });
 
-    function animate(now) {
+    function requestRender() {
+      if (renderRequested) return;
+      renderRequested = true;
       requestAnimationFrame(animate);
+    }
+
+    function animate(now) {
+      renderRequested = false;
+      updateSeparationAnimation(now);
       updateCameraAnimation(now);
-      controls.update();
+      if (isInteracting || focusAnimation || separationAnimation) controls.update();
       renderer.render(scene, camera);
+      if (isInteracting || focusAnimation || separationAnimation) requestRender();
     }
 
     updatePanel(DEFAULT_PANEL, DEFAULT_PANEL.kicker);
     loadCADModel();
-    animate(performance.now());
+    requestRender();
   </script>
 </body>
 </html>
